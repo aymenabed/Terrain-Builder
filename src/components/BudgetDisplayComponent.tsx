@@ -1,7 +1,8 @@
 import React from "react";
+import { toast } from "react-toastify";
 import { useAppSelector } from "../app/hooks";
 import { selectBudget } from "../features/terrain/terrainSlice";
-import { toast } from "react-toastify";
+
 
 const BudgetDisplayComponent: React.FC = () => {
   const budget = useAppSelector(selectBudget);

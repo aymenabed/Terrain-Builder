@@ -4,6 +4,7 @@ import {
   selectGrid,
   placeItem,
   setSelectedTile,
+  SelectedTile,
   selectSelectedBlockType,
 } from "../features/terrain/terrainSlice";
 import { TileType } from "../types";
@@ -11,16 +12,25 @@ import { TileType } from "../types";
 const GridComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const grid = useAppSelector(selectGrid);
+  const selectedTile = useAppSelector(SelectedTile);
   const selectedBlockType = useAppSelector(selectSelectedBlockType);
 
   const handleTileClick = (x: number, y: number, tile: TileType) => {
-    // Ne permettre l'action que si un type de bloc est sélectionné
     if (selectedBlockType) {
       dispatch(placeItem({ x, y, type: selectedBlockType }));
     }
     if (!selectedBlockType || selectedBlockType === "grass") {
       dispatch(setSelectedTile({ type: tile, position: { x, y } }));
     }
+  };
+
+  const isSelectedTile = (rowIndex: number, colIndex: number) => {
+    return (
+      selectedTile &&
+      selectedTile.position &&
+      selectedTile.position.x === rowIndex &&
+      selectedTile.position.y === colIndex
+    );
   };
 
   return (
@@ -51,6 +61,9 @@ const GridComponent: React.FC = () => {
               justifyContent: "center",
               alignItems: "center",
               cursor: "pointer",
+              border: isSelectedTile(rowIndex, colIndex)
+                ? "2px solid black"
+                : "none",
             }}
           >
             <span style={{ fontSize: "10px" }}>{tile[0]}</span>

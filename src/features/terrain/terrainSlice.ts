@@ -1,9 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { TileType } from "../../types";
-import { COSTS } from "../../utlis/constants";
 
-type PlaceItemPayload = {
+const COSTS = {
+  PLACE_HOUSE: 10,
+  REMOVE_HOUSE: 5,
+  PLACE_ROCK: 3,
+  REMOVE_ROCK: 3,
+  PLACE_WATER: 3,
+};
+
+type ItemPayload = {
   x: number;
   y: number;
   type: TileType;
@@ -43,7 +50,7 @@ const terrainSlice = createSlice({
     setSelectedBlockType: (state, action: PayloadAction<TileType | null>) => {
       state.selectedBlockType = action.payload;
     },
-    placeItem: (state, action: PayloadAction<PlaceItemPayload>) => {
+    placeItem: (state, action: PayloadAction<ItemPayload>) => {
       const { x, y, type } = action.payload;
       if (state.selectedBlockType && state.grid[x][y] === TileType.GRASS) {
         const costKey =
@@ -52,7 +59,7 @@ const terrainSlice = createSlice({
           state.grid[x][y] = state.selectedBlockType;
           state.budget -= COSTS[costKey];
           // Update history
-          state.history = state.history.slice(0, state.currentActionIndex + 1);
+          // state.history = state.history.slice(0, state.currentActionIndex + 1);
           state.history.push({
             grid: cloneGrid(state.grid),
             budget: state.budget,
@@ -62,7 +69,7 @@ const terrainSlice = createSlice({
         }
       }
     },
-    removeItem: (state, action: PayloadAction<PlaceItemPayload>) => {
+    removeItem: (state, action: PayloadAction<ItemPayload>) => {
       const { x, y, type } = action.payload;
       const tileType = state.grid[x][y];
       if (tileType !== TileType.GRASS && tileType !== TileType.WATER) {
@@ -70,8 +77,9 @@ const terrainSlice = createSlice({
           `REMOVE_${tileType.toUpperCase()}` as keyof typeof COSTS;
         state.budget += COSTS[costKey];
         state.grid[x][y] = TileType.GRASS;
+        state.selectedTile = null;
         // Update history
-        state.history = state.history.slice(0, state.currentActionIndex + 1);
+        // state.history = state.history.slice(0, state.currentActionIndex + 1);
         state.history.push({
           grid: cloneGrid(state.grid),
           budget: state.budget,

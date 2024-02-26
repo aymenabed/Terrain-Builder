@@ -20,7 +20,7 @@ const TileInfoComponent: React.FC = () => {
 
   // S'assure que selectedTile et selectedTile.position ne sont pas null avant de procéder
   if (!selectedTile || !selectedTile.position) {
-    return <div className="p-4">No tiles selected</div>;
+    return <div className="p-4">No tile selected</div>;
   }
 
   return (
